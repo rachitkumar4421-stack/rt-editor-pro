@@ -1,0 +1,141 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public and private profile data for clients and admins",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "admin"] },
+        "followedEditors": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "username", "email", "role"]
+    },
+    "Editor": {
+      "title": "Editor Profile",
+      "description": "Details of registered editors awaiting approval or approved",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "skills": { "type": "array" },
+        "experience": { "type": "string" },
+        "portfolio": { "type": "array" },
+        "price": { "type": "number" },
+        "profilePhoto": { "type": "string" },
+        "isApproved": { "type": "boolean" },
+        "isVerified": { "type": "boolean" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "earnings": { "type": "number" },
+        "totalWithdrawn": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "username", "email", "skills", "experience", "price", "isApproved", "isVerified"]
+    },
+    "Order": {
+      "title": "Client Order",
+      "description": "An order placed by a client to an editor",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "clientName": { "type": "string" },
+        "editorId": { "type": "string" },
+        "editorName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "status": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "subtitleUrl": { "type": "string" },
+        "subtitleText": { "type": "string" },
+        "previewUrl": { "type": "string" },
+        "thumbnailPrompt": { "type": "string" },
+        "thumbnailPreviewUrl": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewText": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["clientId", "clientName", "editorId", "editorName", "title", "description", "category", "price", "status"]
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "A message in a client-editor conversation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["chatId", "senderId", "senderName", "text", "timestamp"]
+    },
+    "Withdrawal": {
+      "title": "Withdrawal Request",
+      "description": "Earning withdrawal request from an editor",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "editorId": { "type": "string" },
+        "editorName": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "requestedAt": { "type": "string" },
+        "completedAt": { "type": "string" }
+      },
+      "required": ["editorId", "amount", "status", "requestedAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification for updates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "message", "type", "isRead", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Collection of basic user profile documents"
+    },
+    "editors": {
+      "schema": "Editor",
+      "description": "Collection of editor details and profile configurations"
+    },
+    "orders": {
+      "schema": "Order",
+      "description": "Collection of transactions and video editing orders"
+    },
+    "chats": {
+      "schema": "Message",
+      "description": "Collection of all chat and support messages"
+    },
+    "withdrawals": {
+      "schema": "Withdrawal",
+      "description": "Collection of editor balance withdrawal logs"
+    },
+    "notifications": {
+      "schema": "Notification",
+      "description": "In-app notifications sent to specific users"
+    }
+  }
+}

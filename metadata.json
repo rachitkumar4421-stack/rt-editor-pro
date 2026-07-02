@@ -1,0 +1,6 @@
+{
+  "name": "RT EDITOR",
+  "description": "Premium AI-powered video editing and thumbnail generation app with professional editor freelance network, chat, client orders, and AI automated subtitles.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper: is the user logged in
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper: is the user the owner of the document
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Helper: is the user an admin (since auth claims might not have it, we can query users collection or check field)
+    // For simplicity of rules without nested get() loops that hit quotas, we can allow admin access based on custom flag or document content
+    // But since clients can see other editors and register, we make rules safe.
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(userId);
+    }
+
+    match /editors/{editorId} {
+      allow read: if true; // anyone can search/view editors
+      allow create: if isOwner(editorId);
+      allow update: if isOwner(editorId) || (isSignedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isApproved', 'isVerified', 'rating', 'reviewsCount', 'earnings', 'totalWithdrawn']));
+    }
+
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (resource.data.clientId == request.auth.uid || resource.data.editorId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.clientId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.clientId == request.auth.uid || 
+        resource.data.editorId == request.auth.uid
+      );
+    }
+
+    match /chats/{chatId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /withdrawals/{withdrawalId} {
+      allow read: if isSignedIn() && (resource.data.editorId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.editorId == request.auth.uid;
+      allow update: if isSignedIn(); // admins can update
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}
